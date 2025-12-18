@@ -19,6 +19,11 @@ time_step = 1
 
 # Firn model? surface type distinction?
 
+# toDo: Implement a simple ELA based mass balance model + Add IGM ice flow connection
+#       -> test if it works with independent time loops updating the glacier data
+#       -> The question is probably not how often the mb is calculated (daily, monthly, annualy), but how often the glacier state is updated
+#       -> Same goes for the ice flow, the timestep of IGM should not be relevant, as long as the glacier data is updated once per year
+#       -> It could both run continuously, as long as they "talk to each other" at a given frequency
 
 def time_loop_sync():
 
