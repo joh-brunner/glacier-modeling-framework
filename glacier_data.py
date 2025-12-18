@@ -1,6 +1,8 @@
 import xarray as xr
 import numpy as np
 
+# Maybe Geometry should be split here
+
 
 class GlacierData:
     def __init__(self, ny, nx, dx):
@@ -11,7 +13,7 @@ class GlacierData:
             {
                 "bed_topography": (("y", "x"), np.zeros((ny, nx), dtype=np.float32)),
                 "ice_thickness": (("y", "x"), np.zeros((ny, nx), dtype=np.float32)),
-                "surface_h": (("y", "x"), np.zeros((ny, nx), dtype=np.float32)),
+                "surface_h": (("y", "x"), np.zeros((ny, nx), dtype=np.float32)), # redundant
                 "divflux": (("y", "x"), np.zeros((ny, nx), dtype=np.float32)),
                 "climatic_mb": (("y", "x"), np.zeros((ny, nx), dtype=np.float32)),
             },
