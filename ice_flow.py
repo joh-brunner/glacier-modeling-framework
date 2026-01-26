@@ -1,4 +1,5 @@
 import tensorflow as tf
+import igm as igm
 
 
 class IceFlow:

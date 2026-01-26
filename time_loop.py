@@ -3,9 +3,9 @@ from ice_flow import IceFlow
 from climatic_mass_balance import ClimaticMassBalance
 from downscaled_climate_data import DownscaledClimateData
 
-ny, nx = 100, 100
-dx = 10
-glacier = GlacierData(ny, nx, dx)  # load from oggm shop
+glacier = GlacierData()
+glacier.init_from_gridded_data("data/input/gridded_data.nc")
+
 
 iceflow = IceFlow()
 clim_mb = ClimaticMassBalance()

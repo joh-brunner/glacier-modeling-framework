@@ -86,10 +86,10 @@ def get_outlines():
 
 def add_thicknesses_from_shop(gdirs):
 
-    from oggm.shop.millan22 import thickness_to_gdir
+    from oggm.shop.millan22 import millan_thickness_to_gdir
 
     try:
-        workflow.execute_entity_task(thickness_to_gdir, gdirs)
+        workflow.execute_entity_task(millan_thickness_to_gdir, gdirs)
 
     except ValueError:
         print("No millan22 thk data available!")
@@ -109,9 +109,9 @@ def add_additional_data_for_igm_inversion(gdirs):
 
     workflow.execute_entity_task(hugonnet_maps.hugonnet_to_gdir, gdirs)
 
-    from oggm.shop.millan22 import velocity_to_gdir
+    from oggm.shop.millan22 import millan_velocity_to_gdir
 
-    workflow.execute_entity_task(velocity_to_gdir, gdirs)
+    workflow.execute_entity_task(millan_velocity_to_gdir, gdirs)
 
 
 def set_outside_to_nan(gdir):

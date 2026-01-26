@@ -1,0 +1,5 @@
+# GitHub package pinned to commit
+oggm @ git+https://github.com/OGGM/oggm.git@bba6e5f243828ab8d663aa33d43ca2cf2b3b5b8a
+igm-model @ git+https://github.com/instructed-glacier-model/igm.git@01cba9c542c3786dc16502e541bf20dde26e46aa
+tables
+
