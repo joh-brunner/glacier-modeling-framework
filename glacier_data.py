@@ -9,19 +9,22 @@ class GlacierData:
         pass
 
     def init(self, nx, ny, dx, bed_topo, ice_thickness):
-        self.nx = nx
-        self.ny = ny
-        self.dx = dx
         self.data = xr.Dataset(
             {
                 "bed_topography": (("y", "x"), bed_topo.data),
                 "ice_thickness": (("y", "x"), ice_thickness.data),
             },
-            coords={"x": np.arange(nx), "y": np.arange(ny)},
+            coords={
+                "x": np.arange(nx),
+                "y": np.arange(ny),
+            },
+            attrs={
+                "dx": dx,
+            },
         )
 
     def init_from_gridded_data(self, gridded_nc, thickness="consensus_ice_thickness"):
-        ds = xr.open_dataset(gridded_nc)
+        ds = xr.open_dataset(gridded_nc, engine="netcdf4")
         nx = ds["x"].shape[0]
         ny = ds["y"].shape[0]
         dx = ds.attrs["dx"]
@@ -32,8 +35,7 @@ class GlacierData:
 
     def store_data(self, out_path):
         self.data.to_netcdf(out_path)
-        
 
 glacier = GlacierData()
 glacier.init_from_gridded_data("data/input/gridded_data.nc")
-glacier.store_data("data/output/glacier_data.nc")
+        

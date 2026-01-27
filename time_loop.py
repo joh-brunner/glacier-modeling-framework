@@ -1,3 +1,4 @@
+import sys
 from glacier_data import GlacierData
 from ice_flow import IceFlow
 from climatic_mass_balance import ClimaticMassBalance
@@ -6,8 +7,14 @@ from downscaled_climate_data import DownscaledClimateData
 glacier = GlacierData()
 glacier.init_from_gridded_data("data/input/gridded_data.nc")
 
+# todo continue with igm ice flow function
 
 iceflow = IceFlow()
+
+iceflow.to_igm_state(glacier)
+sys.exit()
+
+
 clim_mb = ClimaticMassBalance()
 # frontal ablation object
 
