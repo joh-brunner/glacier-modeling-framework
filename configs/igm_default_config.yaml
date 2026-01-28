@@ -1,0 +1,196 @@
+cwd: ${get_cwd:0}
+core:
+  url_data: https://www.dropbox.com/scl/fo/kd7dix5j1tm75nj941pvi/h?rlkey=q7jtmf9yn3a970cqygdwne25j&dl=0
+  folder_data: data
+  logging_file: ''
+  logging: true
+  logging_level: 30
+  hardware:
+    gpu_info: true
+    visible_gpus:
+    - 0
+    strategy: none
+  print_params: false
+  print_comp: false
+  print_info: true
+  print_imported_modules: true
+  check_compat_params: true
+  structure:
+    root_foldername: user
+    conf_foldername: conf
+    code_foldername: code
+    input_modules_foldername: inputs
+    process_modules_foldername: processes
+    output_modules_foldername: outputs
+processes:
+  smb_simple:
+    update_freq: 1.0
+    file: param.txt
+    array:
+    - - time
+      - gradabl
+      - gradacc
+      - ela
+      - accmax
+    - - 1900
+      - 0.009
+      - 0.005
+      - 2800
+      - 2.0
+    - - 2000
+      - 0.009
+      - 0.005
+      - 2900
+      - 2.0
+    - - 2100
+      - 0.009
+      - 0.005
+      - 3300
+      - 2.0
+  iceflow:
+    method: emulated
+    force_max_velbar: 0.0
+    physics:
+      energy_components:
+      - shear
+      - sliding_weertman
+      - gravity
+      sliding_law: ''
+      gravity_cst: 9.81
+      ice_density: 910.0
+      init_slidingco: 0.0464
+      init_arrhenius: 78.0
+      enhancement_factor: 1.0
+      exp_glen: 3.0
+      exp_weertman: 3.0
+      regu_glen: 1.0e-05
+      regu_weertman: 1.0e-10
+      dim_arrhenius: 2
+      thr_ice_thk: 0.1
+      min_sr: 1.0e-20
+      max_sr: 1.0e+20
+      force_negative_gravitational_energy: false
+      cf_eswn: []
+    numerics:
+      Nz: 10
+      vert_spacing: 4.0
+      staggered_grid: 1
+      vert_basis: Lagrange
+    solver:
+      step_size: 1.0
+      nbitmax: 100
+      stop_if_no_decrease: true
+      optimizer: Adam
+      lbfgs: false
+      save_cost: ''
+      plot_sol: false
+    emulator:
+      fieldin:
+      - thk
+      - usurf
+      - arrhenius
+      - slidingco
+      - dX
+      retrain_freq: 10
+      lr: 2.0e-05
+      lr_init: 0.0001
+      lr_decay: 0.95
+      warm_up_it: -10000000000.0
+      nbit_init: 1
+      nbit: 1
+      framesizemax: 750
+      split_patch_method: sequential
+      pretrained: true
+      name: ''
+      save_model: false
+      exclude_borders: 0
+      optimizer: Adam
+      optimizer_clipnorm: 1.0
+      optimizer_epsilon: 1.0e-07
+      save_cost: ''
+      output_directory: ''
+      plot_sol: false
+      pertubate: false
+      network:
+        architecture: cnn
+        multiple_window_size: 0
+        activation: LeakyReLU
+        nb_layers: 16
+        nb_blocks: 4
+        nb_out_filter: 32
+        conv_ker_size: 3
+        dropout_rate: 0
+        weight_initialization: glorot_uniform
+        cnn3d_for_vertical: false
+  time:
+    start: 1900.0
+    end: 2000.0
+    save: 10.0
+    cfl: 0.3
+    step_max: 1.0
+  thk:
+    slope_type: superbee
+    ratio_density: 0.91
+    default_sealevel: 0.0
+  vert_flow:
+    version: 2
+    method: kinematic
+  particles:
+    seeding:
+      method: accumulation
+      frequency: 50
+      density: 0.2
+      tlast_init: -.inf
+      height: 20
+    tracking:
+      method: 3d
+      library: tensorflow
+    removal:
+      method: ''
+    output:
+      library: numpy
+      add_topography: true
+      format: csv
+      add_fields:
+      - weight
+      - englt
+      - velmag
+inputs:
+  local:
+    type: netcdf
+    filename: input.nc
+    coarsening:
+      boundary: trim
+      ratio: 1
+    crop:
+      xmin: null
+      xmax: null
+      ymin: null
+      ymax: null
+    icemask:
+      include: false
+      shapefile: icemask.shp
+      invert: false
+outputs:
+  write_ncdf:
+    file_format_list:
+    - netcdf
+    output_file: output.nc
+    vars_to_save:
+    - topg
+    - usurf
+    - thk
+    - smb
+    - velbar_mag
+    - velsurf_mag
+    - uvelsurf
+    - vvelsurf
+    - wvelsurf
+  write_ts:
+    output_file: output_ts.nc
+  plot2d:
+    editor: vs
+    live: true
+    particles: true
+    var: velbar_mag
+    var_max: 1000

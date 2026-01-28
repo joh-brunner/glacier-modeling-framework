@@ -36,6 +36,7 @@ class GlacierData:
     def store_data(self, out_path):
         self.data.to_netcdf(out_path)
 
+# toDo
 glacier = GlacierData()
 glacier.init_from_gridded_data("data/input/gridded_data.nc")
         

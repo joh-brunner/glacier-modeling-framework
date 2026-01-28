@@ -4,25 +4,28 @@ from ice_flow import IceFlow
 from climatic_mass_balance import ClimaticMassBalance
 from downscaled_climate_data import DownscaledClimateData
 
-glacier = GlacierData()
-glacier.init_from_gridded_data("data/input/gridded_data.nc")
 
-# todo continue with igm ice flow function
+def main():
+    glacier = GlacierData()
+    glacier.init_from_gridded_data("data/input/gridded_data.nc")
 
-iceflow = IceFlow()
+    # todo continue with igm ice flow function
 
-iceflow.to_igm_state(glacier)
-sys.exit()
+    iceflow = IceFlow()
+    iceflow.init_igm(glacier)
+    iceflow.update_state(glacier)
 
+    clim_mb = ClimaticMassBalance()
+    # frontal ablation object
 
-clim_mb = ClimaticMassBalance()
-# frontal ablation object
+    climate_data = DownscaledClimateData()
 
-climate_data = DownscaledClimateData()
+    # Simulation settings
+    time_period = 1
+    time_step = 1
 
-# Simulation settings
-time_period = 10
-time_step = 1
+    annual_loop_sync(glacier, iceflow, clim_mb, climate_data, time_period, time_step)
+
 
 # Firn model? surface type distinction?
 
@@ -32,10 +35,11 @@ time_step = 1
 #       -> Same goes for the ice flow, the timestep of IGM should not be relevant, as long as the glacier data is updated once per year
 #       -> It could both run continuously, as long as they "talk to each other" at a given frequency
 
-def time_loop_sync():
 
-    for time in range(time_period, step=time_step):
+def annual_loop_sync(glacier, iceflow: IceFlow, clim_mb: ClimaticMassBalance, climate_data, time_period, time_step = 1):
 
+    mb = False
+    if mb:
         # Climatic_mb update: grid-based
         glacier.data["climatic_mb"].values = clim_mb.compute_climatic_mb(
             glacier.data["surface_h"].values,
@@ -46,20 +50,17 @@ def time_loop_sync():
         # Ice_thickness update: mass balance
         glacier.data["ice_thickness"].values += glacier.data["climatic_mb"].values
 
-        # Ice flow update: grid-based
-        glacier.data["divflux"].values[:] = iceflow.compute_flux_div(glacier, time_step)
+    # Ice flow update: grid-based
+    divflux = iceflow.compute_flux_div(glacier, time_step)
 
-        # Ice_thickness update: mass balance
-        glacier.data["ice_thickness"].values += glacier.data["divflux"].values
+    # Ice_thickness update: flux div
+    glacier.data["ice_thickness"].values += divflux
 
-        # Here you could check for frontal ablation and update the glacier data again
-        # 2D Frontal ablation modeling?
+    # Here you could check for frontal ablation and update the glacier data again
+    # 2D Frontal ablation modeling?
 
-        # Optional: store diagnosis output:
-        glacier.data.to_netcdf(time)
+    # Optional: store glacier and diagnosis output:
+    glacier.store_data("data/output/igm_flow_test.nc")
 
 
-def time_loop_async():
-    # two separate time loops / update routines for ice flow and climatic mb
-    # ...
-    pass
+main()
