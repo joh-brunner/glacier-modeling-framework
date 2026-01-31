@@ -1,7 +1,7 @@
-from glacier_data import Glacier
-from linear_mass_balance import LinearMassBalance
-from glacier_writer import GlacierWriter
-from constants import *
+from core.glacier_data import Glacier
+from core.cmb.linear_mass_balance import LinearMassBalance
+from core.output.glacier_writer import GlacierWriter
+from core.constants import *
 import numpy as np
 
 input_file = "data/input/gridded_data.nc"
@@ -13,9 +13,9 @@ def main():
     glacier = Glacier()
     glacier.init_from_gridded_data("data/input/gridded_data.nc")
 
-    # toDo: So far, we need to a adjust the timestep manually here to match the cfl criterion
-    from ice_flow import IceFlowIGM  # toDo: Late import needed, as IGM somehow changes ncdf library...
+    from core.iceflow.ice_flow import IceFlowIGM  # toDo: Late import needed, as IGM somehow changes ncdf library...
 
+    # toDo: So far, we need to a adjust the timestep manually here to match the cfl criterion
     iceflow = IceFlowIGM(glacier, MONTHLY_DT_SECONDS / 2)
     iceflow.init_igm()
 

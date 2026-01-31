@@ -1,5 +1,5 @@
 import numpy as np
-from climatic_mass_balance import ClimaticMassBalance
+from core.cmb.climatic_mass_balance import ClimaticMassBalance
 
 
 class LinearMassBalance(ClimaticMassBalance):

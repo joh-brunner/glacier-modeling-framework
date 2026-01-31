@@ -2,7 +2,7 @@ import os
 import numpy as np
 import tensorflow as tf
 import igm as igm
-from constants import *
+from core.constants import *
 
 # IGM imports
 from igm.common.core.src import State
@@ -11,7 +11,7 @@ from igm.utils.grad.compute_divflux import compute_divflux
 from igm.processes.iceflow.iceflow import update
 from igm.common.runner.configuration.loader import load_yaml_recursive
 
-from model_component import ModelComponent
+from core.model_component import ModelComponent
 
 igm_config_path = "configs/igm_default_config.yaml"
 

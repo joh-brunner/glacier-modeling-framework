@@ -1,6 +1,6 @@
 import numpy as np
-from model_component import ModelComponent
-from constants import *
+from core.model_component import ModelComponent
+from core.constants import *
 
 # Make sure that the step function returns a updated cmb over the given timestep
 # Eg. if the timestep is 1 month, your cmb model needs to return monthly cmb

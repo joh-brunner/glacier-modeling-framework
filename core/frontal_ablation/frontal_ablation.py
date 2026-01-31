@@ -1,4 +1,4 @@
-from model_component import ModelComponent
+from core.model_component import ModelComponent
 
 class FrontalAblation(ModelComponent):
     def step(self, dt):
