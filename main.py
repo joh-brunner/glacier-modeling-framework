@@ -4,14 +4,14 @@ from core.output.glacier_writer import GlacierWriter
 from core.constants import *
 import numpy as np
 
-input_file = "data/input/gridded_data.nc"
-output = "data/output.nc"
-simulation_duration_years = 5
+input_file = "data/input/gridded_data_larsbreen.nc"
+output_file = "data/input/output_larsbreen.nc"
+simulation_duration_years = 50
 
 
 def main():
     glacier = Glacier()
-    glacier.init_from_gridded_data("data/input/gridded_data.nc")
+    glacier.init_from_gridded_data(input_file)
 
     from core.iceflow.ice_flow import IceFlowIGM  # toDo: Late import needed, as IGM somehow changes ncdf library...
 
@@ -25,13 +25,13 @@ def main():
     # frontal_abl = FrontalAblation(glacier, front_abl_dt)
 
     # Output writer
-    writer = GlacierWriter(glacier, "data/output.nc")
+    writer = GlacierWriter(glacier, output_file)
 
     model_components = [iceflow, cmb]
     run_model(model_components, t_end=(simulation_duration_years * ANNUAL_DT_SECONDS), writer=writer)
 
 
-def run_model(model_components, t_end, writer):
+def run_model(model_components, t_end, writer:GlacierWriter):
     # Find the smallest timestep across all model components
     dt_min = min(comp.dt for comp in model_components)
 
@@ -46,7 +46,7 @@ def run_model(model_components, t_end, writer):
                 print(f"{comp.__class__.__name__} updated at t={t:.4f}")
 
                 # toDo: Write output when updating the cmb since it is annual at the moment
-                if comp.__class__.__name__ == "ClimaticMassBalance":
+                if comp.__class__.__name__ == "LinearMassBalance":
                     writer.write(t)
 
 

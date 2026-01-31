@@ -12,6 +12,8 @@ class GlacierWriter:
     def write(self, t):
         # This function comes from ChatGPT but seems to work
 
+        print("Storing thickness")
+
         t = float(t)
 
         thk = self.glacier.data["ice_thickness"]
