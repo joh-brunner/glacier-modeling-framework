@@ -1,66 +1,53 @@
-import sys
-from glacier_data import GlacierData
-from ice_flow import IceFlow
-from climatic_mass_balance import ClimaticMassBalance
-from downscaled_climate_data import DownscaledClimateData
+from glacier_data import Glacier
+from linear_mass_balance import LinearMassBalance
+from glacier_writer import GlacierWriter
+from constants import *
+import numpy as np
+
+input_file = "data/input/gridded_data.nc"
+output = "data/output.nc"
+simulation_duration_years = 5
 
 
 def main():
-    glacier = GlacierData()
+    glacier = Glacier()
     glacier.init_from_gridded_data("data/input/gridded_data.nc")
 
-    # todo continue with igm ice flow function
+    # toDo: So far, we need to a adjust the timestep manually here to match the cfl criterion
+    from ice_flow import IceFlowIGM  # toDo: Late import needed, as IGM somehow changes ncdf library...
 
-    iceflow = IceFlow()
-    iceflow.init_igm(glacier)
-    iceflow.update_state(glacier)
+    iceflow = IceFlowIGM(glacier, MONTHLY_DT_SECONDS / 2)
+    iceflow.init_igm()
 
-    clim_mb = ClimaticMassBalance()
-    # frontal ablation object
+    cmb = LinearMassBalance(glacier, ANNUAL_DT_SECONDS)
 
-    climate_data = DownscaledClimateData()
+    # toDo: frontal ablation object
+    # frontal_abl = FrontalAblation(glacier, front_abl_dt)
 
-    # Simulation settings
-    time_period = 1
-    time_step = 1
+    # Output writer
+    writer = GlacierWriter(glacier, "data/output.nc")
 
-    annual_loop_sync(glacier, iceflow, clim_mb, climate_data, time_period, time_step)
-
-
-# Firn model? surface type distinction?
-
-# toDo: Implement a simple ELA based mass balance model + Add IGM ice flow connection
-#       -> test if it works with independent time loops updating the glacier data
-#       -> The question is probably not how often the mb is calculated (daily, monthly, annualy), but how often the glacier state is updated
-#       -> Same goes for the ice flow, the timestep of IGM should not be relevant, as long as the glacier data is updated once per year
-#       -> It could both run continuously, as long as they "talk to each other" at a given frequency
+    model_components = [iceflow, cmb]
+    run_model(model_components, t_end=(simulation_duration_years * ANNUAL_DT_SECONDS), writer=writer)
 
 
-def annual_loop_sync(glacier, iceflow: IceFlow, clim_mb: ClimaticMassBalance, climate_data, time_period, time_step = 1):
+def run_model(model_components, t_end, writer):
+    # Find the smallest timestep across all model components
+    dt_min = min(comp.dt for comp in model_components)
 
-    mb = False
-    if mb:
-        # Climatic_mb update: grid-based
-        glacier.data["climatic_mb"].values = clim_mb.compute_climatic_mb(
-            glacier.data["surface_h"].values,
-            climate_data,
-            time_step,
-        )
+    # Create a robust time loop
+    times = np.arange(0.0, t_end + dt_min / 2, dt_min)
 
-        # Ice_thickness update: mass balance
-        glacier.data["ice_thickness"].values += glacier.data["climatic_mb"].values
+    for t in times:
+        for comp in model_components:
+            # update component only if it's time
+            if np.isclose(t % comp.dt, 0.0) or np.isclose(comp.dt - (t % comp.dt), 0.0):
+                comp.step(comp.dt)
+                print(f"{comp.__class__.__name__} updated at t={t:.4f}")
 
-    # Ice flow update: grid-based
-    divflux = iceflow.compute_flux_div(glacier, time_step)
-
-    # Ice_thickness update: flux div
-    glacier.data["ice_thickness"].values += divflux
-
-    # Here you could check for frontal ablation and update the glacier data again
-    # 2D Frontal ablation modeling?
-
-    # Optional: store glacier and diagnosis output:
-    glacier.store_data("data/output/igm_flow_test.nc")
+                # toDo: Write output when updating the cmb since it is annual at the moment
+                if comp.__class__.__name__ == "ClimaticMassBalance":
+                    writer.write(t)
 
 
 main()

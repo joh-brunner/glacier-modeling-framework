@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 if len(sys.argv) <= 1:
     RGI_ID = "RGI60-11.01450"
+    RGI_ID = "RGI60-07.01044"
 else:
     RGI_ID = sys.argv[1]
 
@@ -28,7 +29,7 @@ NO_SPINUP_URL = "https://cluster.klima.uni-bremen.de/~oggm/gdirs/oggm_v1.6/L3-L5
 
 TEMP_WD = "temp"
 
-OUT_FOLDER_NAME = "data"
+OUT_FOLDER_NAME = "data/input"
 FILES_TO_STORE = ["gridded_data.nc"]
 
 

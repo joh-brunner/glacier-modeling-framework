@@ -4,7 +4,7 @@ import numpy as np
 # Maybe Geometry should be split here from things like divflux and climatic_mb
 
 
-class GlacierData:
+class Glacier:
     def __init__(self):
         pass
 
@@ -24,7 +24,7 @@ class GlacierData:
         )
 
     def init_from_gridded_data(self, gridded_nc, thickness="consensus_ice_thickness"):
-        ds = xr.open_dataset(gridded_nc, engine="netcdf4")
+        ds = xr.open_dataset(gridded_nc)
         nx = ds["x"].shape[0]
         ny = ds["y"].shape[0]
         dx = ds.attrs["dx"]
@@ -35,8 +35,3 @@ class GlacierData:
 
     def store_data(self, out_path):
         self.data.to_netcdf(out_path)
-
-# toDo
-glacier = GlacierData()
-glacier.init_from_gridded_data("data/input/gridded_data.nc")
-        
