@@ -1,5 +1,12 @@
 # UpGEM
 
+A Glacier Modeling Framework built around a **Shared State Programming Architecture**.
+
+![Alt text](diagrams/glacier_modeling_small.drawio.png)
+
+---
+## First results
+
 ![Glacier thickness evolution](visualization/larsbreen_thickness.gif)
 
 ---
@@ -28,4 +35,11 @@ Overwrite the site-package `igm` with the ZIP download from github.
 ## Running the model
 
 Execute `main.py`.
+
+---
+
+## Ideas
+
+- Develop the GlacierMIP standardization output in the framework
+- Try OGGM/glacier3dviz for visualization of the output 
 
