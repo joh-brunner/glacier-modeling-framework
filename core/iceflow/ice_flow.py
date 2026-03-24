@@ -13,7 +13,8 @@ from igm.common.runner.configuration.loader import load_yaml_recursive
 
 from core.model_component import ModelComponent
 
-igm_config_path = "configs/igm_default_config.yaml"
+# !!! toDo: pretraining is set to false here now
+igm_config_path = "configs/igm"
 
 
 class IceFlowIGM(ModelComponent):
@@ -34,7 +35,7 @@ class IceFlowIGM(ModelComponent):
 
         self.igm_state.it = 0
 
-        self.igm_cfg = load_yaml_recursive(os.path.join(igm.__path__[0], "conf"))
+        self.igm_cfg = load_yaml_recursive(os.path.join(os.getcwd(), igm_config_path))
 
         initialize(self.igm_cfg, self.igm_state)
 
@@ -81,7 +82,7 @@ class IceFlowIGM(ModelComponent):
         # Then we multiply this change over the timestep
         new_thickness = tf.maximum(self.igm_state.thk + dt * -divflux, 0.0).numpy()
         new_thickness[new_thickness == 0.0] = np.nan
-        
+
         # And apply it to the glacier
         self.glacier.data["ice_thickness"].values = new_thickness
 
