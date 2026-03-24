@@ -1,0 +1,6 @@
+gflex:
+  update_freq: 100.0
+  default_Te: 50000.0
+  dx: 1000.0
+  pad: False
+  quiet: True

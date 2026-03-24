@@ -1,0 +1,198 @@
+iceflow:
+  method: emulated
+  force_max_velbar: 0.0
+  physics:
+    energy_components: [viscosity, gravity, sliding]
+    sliding:
+      law: weertman
+      use_mask_gr: false
+      weertman:
+        regu: 1.0e-10
+        exponent: 3.0
+        u_ref: 1.0  # (m/yr)
+      coulomb:
+        regu: 1.0e-10
+        exponent: 3.0
+        u_ref: 1.0  # (m/yr)
+        mu: 0.4
+      budd:
+        regu: 1.0e-10
+        exponent: 3.0
+        u_ref: 1.0  # (m/yr)
+        N_ref: 1.0
+    gravity_cst: 9.81
+    ice_density: 910.0
+    water_density: 1000.0
+    init_slidingco: 0.0464
+    init_arrhenius: 78.0
+    enhancement_factor: 1.0
+    exp_glen: 3.0
+    regu_glen: 1.0e-05
+    thr_ice_thk: 0.1
+    min_sr: 1.0e-20
+    max_sr: 1.0e+20
+    force_negative_gravitational_energy: false
+    cf_eswn: []
+  numerics:
+    precision: single
+    ord_grad_u: l2_weighted
+    ord_grad_theta: l2_weighted
+    Nz: 10
+    vert_spacing: 4.0
+    basis_horizontal: central
+    basis_vertical: Lagrange
+  solver:
+    step_size: 1.0
+    nbitmax: 100
+    optimizer: adam
+    print_cost: false
+    fieldin: [thk, usurf, arrhenius, slidingco, dX]
+  emulator:
+    fieldin: [thk, usurf, arrhenius, slidingco, dX]
+    retrain_freq: 10
+    print_cost: false
+    lr: 2.0e-05
+    lr_init: 0.0001
+    lr_decay: 0.95
+    warm_up_it: -10000000000.0
+    nbit_init: 1
+    nbit: 1
+    framesizemax: 1000
+    split_patch_method: sequential
+    pretrained: true
+    name: ''
+    save_model: false
+    exclude_borders: 0
+    optimizer: Adam
+    optimizer_clipnorm: 1.0
+    optimizer_epsilon: 1.0e-07
+    save_cost: ''
+    output_directory: ''
+    plot_sol: False
+    pertubate: false
+    network:
+      architecture: cnn
+      multiple_window_size: 0
+      activation: LeakyReLU
+      nb_layers: 16
+      nb_blocks: 4
+      nb_out_filter: 32
+      conv_ker_size: 3
+      dropout_rate: 0.0
+      weight_initialization: glorot_uniform
+      cnn3d_for_vertical: false
+      batch_norm: false
+      l2_reg: 0.0
+      separable: false
+      residual: true
+  diagnostic:
+    save_freq: 1
+    filename_metrics: diagnostic_metrics.txt
+  unified:
+    mapping: network
+    bcs: []
+    bc:
+      dirichlet:
+        left: 0.0
+        right: 0.0
+        top: 0.0
+        bottom: 0.0
+    optimizer: adam
+    nbit: 1
+    nbit_init: 1
+    nbit_warmup: -1
+    retrain_freq: 10
+    retrain_threshold: 4.0 # for now it corresponds to a z-score (4 is default as its quite high and will default to the retrain_freq most likely)
+    newton:
+      damping: 1e-6
+    adam:
+      lr: 2.0e-05
+      lr_init: 0.0001
+      lr_decay: 1.0
+      lr_decay_steps: 1000
+      optimizer_clipnorm: 1.0
+    lbfgs:
+      memory: 10
+      alpha_min: 0.0
+    cg_newton:
+      cg_tol: 1e-10
+      cg_max_iter: 100
+      truncated: true
+      damping: 1e-6
+    trust_region:
+      cg_max_iter: 100
+      cg_tol: 1e-12
+      delta_init: 1e2
+      delta_max: 1e10
+      eta: 0.15
+      damping: 1e-6
+    muon:
+      lr: 2.0e-02
+      momentum: 0.95
+      ns_steps: 5
+      lr_1d: 3.0e-04
+    soap:
+      lr: 3.0e-04
+      beta1: 0.95
+      beta2: 0.999
+      eps: 1.0e-08
+      precond_freq: 10
+      damping: 1.0e-08
+    sequential:
+      stages: []
+    line_search: hager-zhang
+    inputs: [thk, usurf, arrhenius, slidingco, dX]
+    normalization:
+      method: adaptive
+      fixed:
+        inputs_offsets: 
+          thk: 0.0
+          usurf: 0.0
+          arrhenius: 0.0
+          slidingco: 0.0
+          dX: 0.0
+          X: 0.0
+          Y: 0.0
+        inputs_variances: 
+          thk: 1.0
+          usurf: 1.0
+          arrhenius: 1.0
+          slidingco: 1.0
+          dX: 1.0
+          X: 1.0
+          Y: 1.0
+    network:
+      debug_mode: false
+      debug_freq: 100
+      pretrained: true
+      pretrained_path: ""
+      print_summary: false
+      output_scale: 1.0
+      architecture: CNN
+    data_preparation:
+      framesizemax: 1000
+      patches_per_batch: 1
+    halt:
+      freq: 1
+      success: []
+      failure: []
+      criteria: 
+        rel_tol:
+          tol: 1e-3
+          ord: l2
+        abs_tol:
+          tol: 1e-3
+          ord: l2_weighted
+        patience: 
+          patience: 100
+        inf: {}
+        nan: {}
+      metrics:
+        theta: {}
+        u: {}
+        cost: {}
+        grad_u_norm: {}
+        grad_theta_norm: {}
+    display:
+      print_cost: false
+      print_cost_freq: 1
