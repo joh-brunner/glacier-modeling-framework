@@ -6,16 +6,15 @@ from core.constants import *
 # Eg. if the timestep is 1 month, your cmb model needs to return monthly cmb
 # Options should be daily, monthly, annual
 
+
 class ClimaticMassBalance(ModelComponent):
 
-    def step(self, dt):
-        if dt == ANNUAL_DT_SECONDS:
+    def step(self, start_time):
+        if self.dt == ANNUAL_DT_SECONDS:
             cmb = self.get_annual_cmb()
-        elif dt == MONTHLY_DT_SECONDS: 
+        elif self.dt == MONTHLY_DT_SECONDS:
             cmb = self.get_monthly_cmb()
-        elif dt == DAILY_DT_SECONDS:
+        elif self.dt == DAILY_DT_SECONDS:
             cmb = self.get_daily_cmb()
 
-        self.glacier.data.ice_thickness.values = np.maximum(self.glacier.data.ice_thickness.values + cmb, 0.0)
-
-
+        self.glacier.update(self, "ice_thickness", cmb, start_time, start_time + self.dt)

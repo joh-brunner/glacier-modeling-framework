@@ -3,7 +3,5 @@ class ModelComponent:
         self.glacier = glacier
         self.dt = dt
 
-    def step(self, dt):
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement step(dt)"
-        )
+    def step(self, start_time):
+        raise NotImplementedError(f"{self.__class__.__name__} must implement step(dt)")

@@ -1,5 +1,7 @@
 import xarray as xr
 import numpy as np
+from core.model_component import ModelComponent
+from core.glacier_history import GlacierHistory, GlacierChangeEvent
 
 
 class Glacier:
@@ -21,6 +23,8 @@ class Glacier:
             },
         )
 
+        self.history_db = GlacierHistory()
+
     def init_from_gridded_data(self, gridded_nc, thickness="consensus_ice_thickness"):
         ds = xr.open_dataset(gridded_nc)
         nx = ds["x"].shape[0]
@@ -35,31 +39,10 @@ class Glacier:
         self.data.to_netcdf(out_path)
 
     # Here we update the glacier data and need to provide some information as well (for the glacier history)
-    def update(self, component, field, change, start_time, end_time):
-        """
-        Update a field in the dataset and log the change in history.
+    def update(self, component: ModelComponent, field: str, change: np.ndarray, start_time: int, end_time: int):
+        # Store the change in history
 
-        Parameters
-        ----------
-        component : str
-            Name of the model component responsible for the update.
+        #g = GlacierChangeEvent(component, field, change, start_time, end_time)
+        #self.history_db.add_event(g)
 
-        field : str
-            Name of the field in the dataset to update.
-            Must match a variable in self.data (e.g., "ice_thickness").
-
-        change : array-like or float
-            The value to apply to the field. Typically represents an increment
-            (e.g., thickness change). Can be a scalar or an array with the same
-            shape as the field.
-
-        start_time : datetime or float
-            The start time of the process causing the update.
-            Can be a datetime object or a model time (e.g., years).
-
-        end_time : datetime or float
-            The end time of the process causing the update.
-            Must be >= start_time.
-        """
-
-        # append the change to the glacier history object
+        self.data[field] = np.maximum(self.data[field] + change, 0.0)

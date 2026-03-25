@@ -1,5 +1,6 @@
 import os
 import xarray as xr
+from pympler import asizeof
 
 
 class GlacierWriter:
@@ -56,3 +57,12 @@ class GlacierWriter:
             {"ice_thickness": da_updated},
             attrs=self.glacier.data.attrs,
         ).to_netcdf(self.path)
+
+    def write_history(self):
+        events = self.glacier.history
+        # 1️⃣ Number of events
+        print("Number of events:", len(events))
+
+        # 2️⃣ Approximate memory usage (deep size)
+        size_bytes = asizeof.asizeof(events)
+        print(f"Approximate memory usage: {size_bytes / 1024**2:.2f} MB")
