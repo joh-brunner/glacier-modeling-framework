@@ -37,6 +37,7 @@ def main():
 
     # Database
     # glacier.history_db.bulk_add_event_list()
+    glacier.history_db.mem_to_disk()
     glacier.history_db.close()
 
     end_time = time.time()

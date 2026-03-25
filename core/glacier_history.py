@@ -2,7 +2,6 @@ import os
 import sqlite3
 import numpy as np
 import io
-from datetime import datetime
 
 
 class GlacierChangeEvent:
@@ -18,20 +17,15 @@ class GlacierChangeEvent:
 
 
 class GlacierHistory:
-    def __init__(self, db_path="glacier_history.db"):
-        # Delete the file if it exists
-        if os.path.exists(db_path):
-            os.remove(db_path)
-
-        self.conn = sqlite3.connect(":memory:")
+    def __init__(self):
+        self.mem_conn = sqlite3.connect(":memory:")
         self._init_db()
-        self.event_list = []
 
     # ----------------------------
     # DB setup
     # ----------------------------
     def _init_db(self):
-        cursor = self.conn.cursor()
+        cursor = self.mem_conn.cursor()
 
         cursor.execute(
             """
@@ -53,22 +47,13 @@ class GlacierHistory:
         """
         )
 
-        self.conn.commit()
-
-    # ----------------------------
-    # Array <-> BLOB helpers
-    # ----------------------------
-    @staticmethod
-    def _array_to_blob(arr: np.ndarray) -> bytes:
-        buffer = io.BytesIO()
-        np.save(buffer, arr)
-        return buffer.getvalue()
+        self.mem_conn.commit()
 
     # ----------------------------
     # Insert
     # ----------------------------
     def add_event(self, event: GlacierChangeEvent):
-        cursor = self.conn.cursor()
+        cursor = self.mem_conn.cursor()
 
         blob = self._array_to_blob(event.change)
 
@@ -81,38 +66,33 @@ class GlacierHistory:
             (event.component.__class__.__name__, event.field, blob, event.start_time, event.end_time),
         )
 
-        self.conn.commit()
+        self.mem_conn.commit()
 
-    def add_event_to_list(self, event: GlacierChangeEvent):
-        self.event_list.append(event)
+    def mem_to_disk(self):
+        # Store the glacier changes on disk (possibly optional)
 
-    def bulk_add_event_list(self):
-        cursor = self.conn.cursor()
+        if os.path.exists("glacier_history.db"):
+            os.remove("glacier_history.db")
 
-        data = [
-            (
-                e.component.__class__.__name__,
-                e.field,
-                GlacierHistory._array_to_blob(e.change),
-                e.start_time,
-                e.end_time,
-            )
-            for e in self.event_list
-        ]
+        # create disk database
+        disk_conn = sqlite3.connect("glacier_history.db")
 
-        cursor.executemany(
-            """
-            INSERT INTO glacier_change_events
-            (component, field, change, start_time, end_time)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            data,
-        )
+        # copy everything from memory → disk
+        self.mem_conn.backup(disk_conn)
 
-        self.conn.commit()
+        disk_conn.close()
 
     # ----------------------------
-    # Close connection
+    # Close db memory connection
     # ----------------------------
     def close(self):
-        self.conn.close()
+        self.mem_conn.close()
+
+    # ----------------------------
+    # Array <-> BLOB helpers
+    # ----------------------------
+    @staticmethod
+    def _array_to_blob(arr: np.ndarray) -> bytes:
+        buffer = io.BytesIO()
+        np.save(buffer, arr)
+        return buffer.getvalue()

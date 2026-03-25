@@ -42,7 +42,7 @@ class Glacier:
     def update(self, component: ModelComponent, field: str, change: np.ndarray, start_time: int, end_time: int):
         # Store the change in history
 
-        #g = GlacierChangeEvent(component, field, change, start_time, end_time)
-        #self.history_db.add_event(g)
+        g = GlacierChangeEvent(component, field, change, start_time, end_time)
+        self.history_db.add_event(g)
 
         self.data[field] = np.maximum(self.data[field] + change, 0.0)
