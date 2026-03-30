@@ -9,6 +9,9 @@ from core.constants import *
 
 class ClimaticMassBalance(ModelComponent):
 
+    # We only calculate the CMB on the glacier
+    # That means that outline changes can only be caused by ice flow
+
     def step(self, start_time):
         if self.dt == ANNUAL_DT_SECONDS:
             cmb = self.get_annual_cmb()

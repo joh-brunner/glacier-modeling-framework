@@ -48,8 +48,8 @@ class Glacier:
         # get median glacier evolution
         median_elevation = np.nanmedian(glacier_elevation)
 
-        # classify glacier into ICE / SNOW
-        initial_surface_types = np.where(glacier_elevation <= median_elevation, ICE, SNOW)
+        # classify glacier into ICE / FIRN
+        initial_surface_types = np.where(glacier_elevation <= median_elevation, ICE, FIRN)
 
         # mark off-glacier
         initial_surface_types = np.where(np.isnan(glacier_elevation), OFF_GLACIER, initial_surface_types)
@@ -67,5 +67,11 @@ class Glacier:
         self.history_db.add_event(g)
 
         # Update the glacier state
-        # Both thickness and surface type can never negative
-        self.data[field] = np.maximum(self.data[field] + change, 0.0)
+        if field == "ice_thickness":
+            # Thickness can never be negative
+            change[np.isnan(change)] = 0
+            self.data[field] = np.maximum(self.data[field] + change, 0.0)
+
+        elif field == "surface_type":
+            # Decode surface_type change
+            self.data[field] = xr.where(change == 0, self.data[field], change % 10)

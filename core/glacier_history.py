@@ -55,7 +55,7 @@ class GlacierHistory:
     def add_event(self, event: GlacierChangeEvent):
         cursor = self.mem_conn.cursor()
 
-        blob = self._array_to_blob(event.change)
+        blob = self.array_to_blob(event.change)
 
         cursor.execute(
             """
@@ -92,7 +92,41 @@ class GlacierHistory:
     # Array <-> BLOB helpers
     # ----------------------------
     @staticmethod
-    def _array_to_blob(arr: np.ndarray) -> bytes:
+    def array_to_blob(arr: np.ndarray) -> bytes:
         buffer = io.BytesIO()
         np.save(buffer, arr)
         return buffer.getvalue()
+
+    def blob_to_array(self, blob: bytes) -> np.ndarray:
+        buffer = io.BytesIO(blob)
+        buffer.seek(0)
+        return np.load(buffer)
+
+    # Query functions
+
+    def aggregate_change(self, component: str, field: str, start_time: float, end_time: float):
+        cursor = self.mem_conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT change
+            FROM glacier_change_events
+            WHERE component = ?
+            AND field = ?
+            AND start_time >= ?
+            AND end_time <= ?
+            """,
+            (component, field, start_time, end_time),
+        )
+
+        total = None
+
+        for (blob,) in cursor:
+            arr = self.blob_to_array(blob)
+
+            if total is None:
+                total = arr.copy()
+            else:
+                total += arr
+
+        return total

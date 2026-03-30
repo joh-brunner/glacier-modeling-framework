@@ -1,6 +1,7 @@
 from core.glacier_data import Glacier
 from core.cmb.linear_mass_balance import LinearMassBalance
 from core.output.glacier_writer import GlacierWriter
+from core.surface_type.surface_type import SurfaceType
 from core.constants import *
 import numpy as np
 import time
@@ -21,6 +22,8 @@ def main():
     iceflow.init_igm()
 
     cmb = LinearMassBalance(glacier, ANNUAL_DT_SECONDS)
+    
+    surface_type = SurfaceType(glacier, ANNUAL_DT_SECONDS)
 
     # toDo: frontal ablation object
     # frontal_abl = FrontalAblation(glacier, front_abl_dt)
@@ -32,7 +35,7 @@ def main():
 
     start_time = time.time()
 
-    model_components = [iceflow, cmb]
+    model_components = [iceflow, cmb, surface_type]
     run_model(model_components, t_end=(simulation_duration_years * ANNUAL_DT_SECONDS), writer=writer)
 
     # Database
