@@ -40,9 +40,11 @@ class Glacier:
 
     # Here we update the glacier data and need to provide some information as well (for the glacier history)
     def update(self, component: ModelComponent, field: str, change: np.ndarray, start_time: int, end_time: int):
-        # Store the change in history
 
+        # Store the change in history
         g = GlacierChangeEvent(component, field, change, start_time, end_time)
         self.history_db.add_event(g)
 
+        # Update the glacier state
+        # Both thickness and surface type can never negative
         self.data[field] = np.maximum(self.data[field] + change, 0.0)

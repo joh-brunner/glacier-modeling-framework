@@ -5,8 +5,8 @@ from core.constants import *
 import numpy as np
 import time
 
-input_file = "data/input/gridded_data_larsbreen.nc"
-output_file = "data/input/output_larsbreen.nc"
+input_file = "data/input/gridded_data.nc"
+output_file = "data/output/output_larsbreen.nc"
 simulation_duration_years = 10
 
 
@@ -51,19 +51,23 @@ def run_model(model_components, t_end, writer: GlacierWriter):
     # Create a robust time loop
     times = np.arange(0.0, t_end + dt_min / 2, dt_min)
 
+    update_counts = {comp: 0 for comp in model_components}
+    last_store_time = -1
+
     for t in times:
         for comp in model_components:
             # update component only if it's time
             if np.isclose(t % comp.dt, 0.0) or np.isclose(comp.dt - (t % comp.dt), 0.0):
+
+                # store glacier state output
+                if t % ANNUAL_DT_SECONDS == 0 and last_store_time != t:
+                    writer.write(t)
+                    last_store_time = t
+
                 comp.step(t)
-                print(f"{comp.__class__.__name__} updated at t={t:.4f}")
+                update_counts[comp] += 1
 
-                # toDo: Write output when updating the cmb since it is annual at the moment
-                if comp.__class__.__name__ == "LinearMassBalance":
-                    # writer.write(t)
-                    pass
-
-    # writer.write_history()
+                print(f"{comp.__class__.__name__} updated at t={t:.4f} " f"(count={update_counts[comp]})")
 
 
 main()

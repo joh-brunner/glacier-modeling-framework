@@ -117,7 +117,8 @@ def add_additional_data_for_igm_inversion(gdirs):
 
 def set_outside_to_nan(gdir):
     ds_res = xr.open_dataset(gdir.dir + "/gridded_data.nc", mode="r+")
-    ds_res["millan_ice_thickness"] = ds_res["millan_ice_thickness"].where(ds_res["glacier_mask"] != 0, np.nan)
+    ds_res["millan_ice_thickness"] = ds_res["millan_ice_thickness"].where(ds_res["glacier_mask"] != 0, 0)
+    ds_res["consensus_ice_thickness"] = ds_res["consensus_ice_thickness"].where(ds_res["glacier_mask"] != 0, 0)
 
     if "cook23_thk" in ds_res:
         ds_res["cook23_thk"] = ds_res["cook23_thk"].where(ds_res["glacier_mask"] != 0, np.nan)
