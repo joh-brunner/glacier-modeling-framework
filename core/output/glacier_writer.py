@@ -12,49 +12,60 @@ class GlacierWriter:
         self.glacier = glacier
 
     def write(self, t):
-        # This function comes from ChatGPT but seems to work
-
-        print("Storing thickness")
+        print("Storing fields")
 
         t = float(t)
 
-        thk = self.glacier.data["ice_thickness"]
+        fields = ["ice_thickness", "surface_type"]
 
-        da_new = xr.DataArray(
-            thk.values[None, :, :],
-            dims=("t", "y", "x"),
-            coords={
-                "t": [t],
-                "y": self.glacier.data.y,
-                "x": self.glacier.data.x,
-            },
-            name="ice_thickness",
-        )
+        # --- build new DataArrays ---
+        da_new = {}
 
-        # first write → create file
+        for field in fields:
+            data = self.glacier.data[field]
+
+            da = xr.DataArray(
+                data.values[None, :, :],
+                dims=("t", "y", "x"),
+                coords={
+                    "t": [t],
+                    "y": self.glacier.data.y,
+                    "x": self.glacier.data.x,
+                },
+                name=field,
+            )
+
+            da_new[field] = da
+
+        # --- first write ---
         if not os.path.exists(self.path):
             xr.Dataset(
-                {"ice_thickness": da_new},
+                da_new,
                 attrs=self.glacier.data.attrs,
             ).to_netcdf(self.path)
             return
 
-        # file exists
+        # --- update existing file ---
         with xr.open_dataset(self.path) as ds_old:
-            da_old = ds_old["ice_thickness"]
 
-            if t in da_old.t.values:
-                # overwrite existing timestep
-                da_updated = da_old.copy()
-                da_updated.loc[dict(t=t)] = da_new.squeeze("t")
-            else:
-                # append new timestep
-                da_updated = xr.concat([da_old, da_new], dim="t")
+            da_updated = {}
 
-        # keep time sorted (optional but recommended)
-        da_updated = da_updated.sortby("t")
+            for field in fields:
+                da_old = ds_old[field]
+                da_field_new = da_new[field]
 
+                if t in da_old.t.values:
+                    # overwrite timestep
+                    da_tmp = da_old.copy()
+                    da_tmp.loc[dict(t=t)] = da_field_new.squeeze("t")
+                else:
+                    # append timestep
+                    da_tmp = xr.concat([da_old, da_field_new], dim="t")
+
+                da_updated[field] = da_tmp.sortby("t")
+
+        # --- write back ---
         xr.Dataset(
-            {"ice_thickness": da_updated},
+            da_updated,
             attrs=self.glacier.data.attrs,
         ).to_netcdf(self.path)
