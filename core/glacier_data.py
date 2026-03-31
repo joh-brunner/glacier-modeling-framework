@@ -10,10 +10,14 @@ class Glacier:
         pass
 
     def init(self, nx, ny, dx, bed_topo, ice_thickness, surface_type):
+        self._check_datatype(bed_topo, "bed_topo", np.float32)
+        self._check_datatype(ice_thickness, "ice_thickness", np.float32)
+        self._check_datatype(surface_type, "surface_type", np.int8)
+
         self.data = xr.Dataset(
             {
-                "bed_topography": (("y", "x"), bed_topo.data),
-                "ice_thickness": (("y", "x"), ice_thickness.data),
+                "bed_topography": (("y", "x"), bed_topo),
+                "ice_thickness": (("y", "x"), ice_thickness),
                 "surface_type": (("y", "x"), surface_type),
             },
             coords={
@@ -36,7 +40,8 @@ class Glacier:
         ice_thickness = ds[thickness]
         initial_surface_types = self.get_init_surface_type(bed_topo, ice_thickness)
 
-        self.init(nx, ny, dx, bed_topo, ice_thickness, initial_surface_types)
+        self.init(nx, ny, dx, bed_topo.data, ice_thickness.data, initial_surface_types)
+
         ds.close()
 
     def get_init_surface_type(self, bed_topo, ice_thickness):
@@ -54,7 +59,7 @@ class Glacier:
         # mark off-glacier
         initial_surface_types = np.where(np.isnan(glacier_elevation), OFF_GLACIER, initial_surface_types)
 
-        return initial_surface_types
+        return initial_surface_types.astype(np.int8)
 
     def store_data(self, out_path):
         self.data.to_netcdf(out_path)
@@ -62,16 +67,27 @@ class Glacier:
     # Here we update the glacier data and need to provide some information as well (for the glacier history)
     def update(self, component: ModelComponent, field: str, change: np.ndarray, start_time: int, end_time: int):
 
-        # Store the change in history
+        # Safety check
+        self._check_datatype(change, field, self.data[field].values.dtype)
+
+        # Store the change in history, it may include NaNs where no change was computed
         g = GlacierChangeEvent(component, field, change, start_time, end_time)
         self.history_db.add_event(g)
 
         # Update the glacier state
         if field == "ice_thickness":
+            # Possible NaNs, e.g. where cmb was not computed, are set to 0
+            change[np.isnan(change)] = 0.0
             # Thickness can never be negative
-            change[np.isnan(change)] = 0
-            self.data[field] = np.maximum(self.data[field] + change, 0.0)
+            self.data[field].values = np.maximum(self.data[field].values + change, 0.0)
 
         elif field == "surface_type":
             # Decode surface_type change
-            self.data[field] = xr.where(change == 0, self.data[field], change % 10)
+            self.data[field].values = np.where(change == 0, self.data[field].values, change % 10)
+
+    def _check_datatype(self, arr, name, dtype):
+        if not isinstance(arr, np.ndarray):
+            raise TypeError(f"{name} must be np.ndarray")
+
+        if arr.dtype != dtype:
+            raise TypeError(f"{name} must be one of {dtype}, got {arr.dtype}")
