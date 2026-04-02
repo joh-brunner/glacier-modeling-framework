@@ -27,7 +27,7 @@ A Glacier Modeling Framework built around a **Shared State Programming Architect
 
 Create a new conda environment and install the dependencies in `requirements.txt`.
 
-There were problems with the IGM installation: it had to be done manually:
+There were problems with the ncdf version in the IGM installation: it had to be done manually:
 Overwrite the site-package `igm` with the ZIP download from github.
 
 ---

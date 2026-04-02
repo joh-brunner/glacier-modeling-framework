@@ -5,6 +5,7 @@ from core.surface_type.surface_type import SurfaceType
 from core.constants import *
 import numpy as np
 import time
+from core.iceflow.ice_flow import IceFlowIGM  # toDo: Late import needed, as IGM somehow changes ncdf library...
 
 input_file = "data/input/gridded_data.nc"
 output_file = "data/output/output_larsbreen.nc"
@@ -15,7 +16,6 @@ def main():
     glacier = Glacier()
     glacier.init_from_gridded_data(input_file)
 
-    from core.iceflow.ice_flow import IceFlowIGM  # toDo: Late import needed, as IGM somehow changes ncdf library...
 
     # toDo: So far, we need to a adjust the timestep manually here to match the cfl criterion
     iceflow = IceFlowIGM(glacier, MONTHLY_DT_SECONDS / 2)

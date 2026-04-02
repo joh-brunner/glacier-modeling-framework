@@ -1,5 +1,7 @@
-# GitHub package pinned to commit
-oggm @ git+https://github.com/OGGM/oggm.git@bba6e5f243828ab8d663aa33d43ca2cf2b3b5b8a
-igm-model @ git+https://github.com/instructed-glacier-model/igm.git@9da9c3851ab5fab27fd520b112370f5ab26d135d
-tables
+# pip install --upgrade --force-reinstall -r requirements.txt
+oggm @ git+https://github.com/OGGM/oggm.git
+# toDo: The IGM netcdf4 version == 1.6 breaks installation
+#       If just using the installation from OGGM netcdf4 version == 1.7.4 everything works fine...
+igm-model @ git+https://github.com/instructed-glacier-model/igm.git
+# tables
 

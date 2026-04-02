@@ -6,7 +6,6 @@ print("Script started")
 import json
 import os
 import shutil
-import subprocess
 
 import sys
 import numpy as np
@@ -25,11 +24,9 @@ if len(sys.argv) <= 1:
 else:
     RGI_ID = sys.argv[1]
 
-NO_SPINUP_URL = "https://cluster.klima.uni-bremen.de/~oggm/gdirs/oggm_v1.6/L3-L5_files/2023.3/elev_bands/W5E5"
-
 TEMP_WD = "temp"
 
-OUT_FOLDER_NAME = "data/input"
+OUT_FOLDER_NAME = "../../data/input"
 FILES_TO_STORE = ["gridded_data.nc"]
 
 
@@ -51,8 +48,8 @@ def main():
     add_thicknesses_from_shop(gdirs)
     add_additional_data_for_igm_inversion(gdirs)
 
-    # Set all thicknesses to NAN outside the mask
-    set_outside_to_nan(gdir)
+    # Set all thicknesses to NAN or 0 outside the mask
+    set_outside_to_value(gdir, 0)
 
     # Rename cook var so that every thickness field contains three words
     rename_cook_var(gdir)
@@ -115,13 +112,14 @@ def add_additional_data_for_igm_inversion(gdirs):
     workflow.execute_entity_task(millan_velocity_to_gdir, gdirs)
 
 
-def set_outside_to_nan(gdir):
+def set_outside_to_value(gdir, value):
     ds_res = xr.open_dataset(gdir.dir + "/gridded_data.nc", mode="r+")
-    ds_res["millan_ice_thickness"] = ds_res["millan_ice_thickness"].where(ds_res["glacier_mask"] != 0, 0)
-    ds_res["consensus_ice_thickness"] = ds_res["consensus_ice_thickness"].where(ds_res["glacier_mask"] != 0, 0)
+    ds_res["millan_ice_thickness"] = ds_res["millan_ice_thickness"].where(ds_res["glacier_mask"] != 0, value)
+    ds_res["consensus_ice_thickness"] = ds_res["consensus_ice_thickness"].where(ds_res["glacier_mask"] != 0, value)
 
     if "cook23_thk" in ds_res:
-        ds_res["cook23_thk"] = ds_res["cook23_thk"].where(ds_res["glacier_mask"] != 0, np.nan)
+        ds_res["cook23_thk"] = ds_res["cook23_thk"].where(ds_res["glacier_mask"] != 0, value)
+
     ds_res.to_netcdf(gdir.dir + "/gridded_data.nc", mode="a")
     ds_res.close()
 
