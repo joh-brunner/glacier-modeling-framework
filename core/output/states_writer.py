@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 import xarray as xr
 
 # This class is intended to store the current state of the glacier and climate (e.g. once per year)

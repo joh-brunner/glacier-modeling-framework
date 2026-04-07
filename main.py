@@ -1,11 +1,11 @@
 import pandas as pd
-from core.glacier import Glacier
-from core.climate import Climate
-from core.cmb.ti_mass_balance import TIMassBalance
-from core.cmb.climate_downscaling import ClimateDownscaling
+from core.states.glacier import Glacier
+from core.states.climate import Climate
+from core.components.cmb.ti_mass_balance import TIMassBalance
+from core.components.climate_downscaling.climate_downscaling import ClimateDownscaling
 from core.output.states_writer import StatesWriter
-from core.surface_type.surface_type import SurfaceType
-from core.iceflow.ice_flow import IceFlowIGM
+from core.components.surface_type.surface_type import SurfaceType
+from core.components.iceflow.ice_flow import IceFlowIGM
 from core.constants import *
 import time
 
