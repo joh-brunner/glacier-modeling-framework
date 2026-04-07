@@ -1,0 +1,137 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram name="Page-1" id="5PpGAWWZEWI-hHRn_aDB">
+    <mxGraphModel dx="1426" dy="945" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="4681" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-4" value="&lt;b&gt;Glacier State&lt;/b&gt;&lt;div&gt;(&lt;span style=&quot;font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;xr.D&lt;/span&gt;&lt;span style=&quot;font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;ataset of &lt;/span&gt;&lt;span style=&quot;font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;np.2&lt;/span&gt;&lt;span style=&quot;font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;darrays&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="655" y="470" width="490" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="GvGiqI9jRPs6XPz6Av9Z-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;" edge="1" parent="1" source="ZSWTKcDnUZzyIaOBTArM-2" target="wdR3U-H_XDWIQ5Rh68Hm-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="810" y="870" />
+              <mxPoint x="1430" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GvGiqI9jRPs6XPz6Av9Z-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;" edge="1" parent="1" source="ZSWTKcDnUZzyIaOBTArM-2" target="wdR3U-H_XDWIQ5Rh68Hm-17">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="808" />
+              <mxPoint x="725" y="808" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZSWTKcDnUZzyIaOBTArM-2" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Surface Elevation&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="670" y="530" width="310" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-1" value="&lt;i&gt;Model Components&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="442.5" y="743" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-2" value="&lt;i&gt;Model States&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="440" y="545" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-4" target="wdR3U-H_XDWIQ5Rh68Hm-25" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-5" value="&lt;b&gt;Climate State&lt;/b&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: transparent; font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;xr.D&lt;/span&gt;&lt;span style=&quot;background-color: transparent; font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;ataset of &lt;/span&gt;&lt;span style=&quot;background-color: transparent; font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;np.2&lt;/span&gt;&lt;span style=&quot;background-color: transparent; font-family: &amp;quot;Droid Sans Mono&amp;quot;, &amp;quot;monospace&amp;quot;, monospace; font-size: 14px; white-space: pre; color: rgb(38, 127, 153);&quot;&gt;darrays&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="1205" y="470" width="450" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-9" target="wdR3U-H_XDWIQ5Rh68Hm-23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-9" target="wdR3U-H_XDWIQ5Rh68Hm-22" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZSWTKcDnUZzyIaOBTArM-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-9" target="wdR3U-H_XDWIQ5Rh68Hm-24" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-9" value="Climate Downscaling" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="1370" y="729" width="120" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-12" value="ERA5 Monthly&lt;div&gt;(OGGM shop)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="490" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-13" value="Bedrock Topo&lt;div&gt;(constant)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="690" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-14" value="Ice Thickness&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="840" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-15" value="&lt;div&gt;Surface Type&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1007.5" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZSWTKcDnUZzyIaOBTArM-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-17" target="wdR3U-H_XDWIQ5Rh68Hm-14" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="725" y="670" />
+              <mxPoint x="860" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-17" value="&lt;div&gt;IGM Ice Flow&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="665" y="728" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-19" target="wdR3U-H_XDWIQ5Rh68Hm-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-19" value="&lt;div&gt;Climatic Mass Balance&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="830" y="728" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-21" target="wdR3U-H_XDWIQ5Rh68Hm-15" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-21" value="&lt;div&gt;SurfaceTypeUpdater&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="985" y="728" width="165" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="GvGiqI9jRPs6XPz6Av9Z-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;dashed=1;" edge="1" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-22" target="wdR3U-H_XDWIQ5Rh68Hm-19">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="830" />
+              <mxPoint x="935" y="830" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-22" value="&lt;div&gt;Corrected&lt;/div&gt;&lt;div&gt;Temperature&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1225" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-23" value="&lt;div&gt;Liquid Precip&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1370" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-24" value="&lt;div&gt;Solid Precip&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-25" value="&lt;div&gt;&lt;b&gt;Glacier History&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Tracks all changes on Glacier, e.g. by Ice Flow or CMB&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="800" y="320" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-26" value="Model Changes" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=2" parent="1" vertex="1">
+          <mxGeometry x="440" y="360" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wdR3U-H_XDWIQ5Rh68Hm-29" value="Initial Glacier Data&lt;div&gt;(OGGM shop)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="450" y="470" width="145" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZSWTKcDnUZzyIaOBTArM-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.01;entryY=0.167;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-29" target="wdR3U-H_XDWIQ5Rh68Hm-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GvGiqI9jRPs6XPz6Av9Z-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.545;entryY=0.983;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" edge="1" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-25" target="wdR3U-H_XDWIQ5Rh68Hm-21">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1180" y="375" />
+              <mxPoint x="1180" y="808" />
+              <mxPoint x="1075" y="808" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GvGiqI9jRPs6XPz6Av9Z-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.593;entryY=1.017;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" edge="1" parent="1" source="wdR3U-H_XDWIQ5Rh68Hm-24" target="wdR3U-H_XDWIQ5Rh68Hm-19">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1610" y="850" />
+              <mxPoint x="913" y="850" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
