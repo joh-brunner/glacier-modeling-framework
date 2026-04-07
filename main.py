@@ -1,76 +1,88 @@
-from core.glacier_data import Glacier
-from core.cmb.linear_mass_balance import LinearMassBalance
-from core.output.glacier_writer import GlacierWriter
+import pandas as pd
+from core.glacier import Glacier
+from core.climate import Climate
+from core.cmb.ti_mass_balance import TIMassBalance
+from core.cmb.climate_downscaling import ClimateDownscaling
+from core.output.states_writer import StatesWriter
 from core.surface_type.surface_type import SurfaceType
+from core.iceflow.ice_flow import IceFlowIGM
 from core.constants import *
-import numpy as np
 import time
-from core.iceflow.ice_flow import IceFlowIGM  # toDo: Late import needed, as IGM somehow changes ncdf library...
 
 input_file = "data/input/gridded_data.nc"
 output_file = "data/output/output_larsbreen.nc"
+climate_data_file = "data/input/climate_historical.nc"
+
+start_date = "2000-01-01"
 simulation_duration_years = 10
 
 
 def main():
+    # 1. Init data states
     glacier = Glacier()
     glacier.init_from_gridded_data(input_file)
+    climate = Climate(glacier.data.sizes["y"], glacier.data.sizes["x"], glacier.data.attrs["dx"], climate_data_file)
 
-
-    # toDo: So far, we need to a adjust the timestep manually here to match the cfl criterion
-    iceflow = IceFlowIGM(glacier, MONTHLY_DT_SECONDS / 2)
+    # 2. Init model components with timesteps
+    iceflow = IceFlowIGM(glacier, climate, "weekly")
     iceflow.init_igm()
 
-    cmb = LinearMassBalance(glacier, ANNUAL_DT_SECONDS)
-    
-    surface_type = SurfaceType(glacier, ANNUAL_DT_SECONDS)
+    climate_downscaling = ClimateDownscaling(glacier, climate, "monthly")
 
-    # toDo: frontal ablation object
-    # frontal_abl = FrontalAblation(glacier, front_abl_dt)
+    cmb = TIMassBalance(glacier, climate, "monthly")
 
-    # Output writer
-    writer = GlacierWriter(glacier, output_file)
+    surface_type = SurfaceType(glacier, climate, "yearly")
 
-    # Run the model
+    # toDo: frontal ablation component
+    # frontal_abl = FrontalAblation(glacier, climate, front_abl_dt)
 
+    # 3. Define the order of your components
+    # If two components run on the same timestep, the one listed first will be executed first
+    model_components = [iceflow, climate_downscaling, cmb, surface_type]
+
+    # 4. Run the simulation
+    # Track program execution timing start
     start_time = time.time()
 
-    model_components = [iceflow, cmb, surface_type]
-    run_model(model_components, t_end=(simulation_duration_years * ANNUAL_DT_SECONDS), writer=writer)
+    writer = StatesWriter(glacier, climate, output_file)  # add ncdf output writer
+    run_model(model_components, start_date, simulation_duration_years, writer=writer)
 
-    # Database
-    # glacier.history_db.bulk_add_event_list()
+    # 5. Store simulation output (so far only in memory)
+    # Database output to disk
     glacier.history_db.mem_to_disk()
     glacier.history_db.close()
 
+    # Ncdf output to disk
+    writer.finalize()
+
+    # Show program execution timing
     end_time = time.time()
     print(f"Execution time: {end_time - start_time:.3f} seconds")
 
 
-def run_model(model_components, t_end, writer: GlacierWriter):
-    # Find the smallest timestep across all model components
-    dt_min = min(comp.dt for comp in model_components)
-
-    # Create a robust time loop
-    times = np.arange(0.0, t_end + dt_min / 2, dt_min)
+def run_model(model_components, start_date, simulation_years, writer):
+    # Create daily timeline (real calendar)
+    start = pd.Timestamp(start_date)
+    end = start + pd.DateOffset(years=simulation_years)
+    times = pd.date_range(start=start, end=end, freq="D")
 
     update_counts = {comp: 0 for comp in model_components}
-    last_store_time = -1
+    last_ncdf_store_year = None
 
-    for t in times:
+    for current_time in times:
+        # Store NCDF once per year (Jan 1)
+        if current_time.month == 1 and current_time.day == 1:
+            if last_ncdf_store_year != current_time.year:
+                writer.write(current_time)
+                last_ncdf_store_year = current_time.year
+
         for comp in model_components:
-            # update component only if it's time
-            if np.isclose(t % comp.dt, 0.0) or np.isclose(comp.dt - (t % comp.dt), 0.0):
+            if comp.should_step(current_time):
+                end_time = comp.get_end_time(current_time)
+                comp.step(current_time, end_time)
 
-                # store glacier state output
-                if t % ANNUAL_DT_SECONDS == 0 and last_store_time != t:
-                    writer.write(t)
-                    last_store_time = t
-
-                comp.step(t)
                 update_counts[comp] += 1
-
-                print(f"{comp.__class__.__name__} updated at t={t:.4f} " f"(count={update_counts[comp]})")
+                print(f"{comp.__class__.__name__} updated at {current_time} " f"(count={update_counts[comp]})")
 
 
 main()

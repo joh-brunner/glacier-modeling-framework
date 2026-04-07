@@ -44,7 +44,7 @@ class IceFlowIGM(ModelComponent):
         surface_elevation = self.glacier.data.ice_thickness.values + self.glacier.data.bed_topography.values
         self.igm_state.usurf = tf.Variable(np.nan_to_num(surface_elevation, nan=0.0))
 
-    def step(self, start_time):
+    def step(self, start_time, end_time):
         self.update_igm_state()
 
         update(self.igm_cfg, self.igm_state)
@@ -58,11 +58,13 @@ class IceFlowIGM(ModelComponent):
             / ANNUAL_DT_SECONDS
         )
 
+        dt_seconds = (end_time - start_time).total_seconds()
+
         # compute the maximum possible time step that complies with CFL condition
         cfl = 0.5  # hard-coded, could be added to input parameters in config.yaml later
         dt_cfl = cfl * int(float(self.glacier.data.dx)) / velomax
-        if self.dt > dt_cfl:
-            raise ValueError(f"Invalid timestep: dt={self.dt} > dt_cfl={dt_cfl} (CFL criterion violated)")
+        if dt_seconds > dt_cfl:
+            raise ValueError(f"Invalid timestep: dt={dt_seconds} > dt_cfl={dt_cfl} (CFL criterion violated)")
 
         #  --- Flux divergence ---
 
@@ -80,13 +82,13 @@ class IceFlowIGM(ModelComponent):
         )
 
         # Then we multiply this change over the timestep
-        new_thickness = tf.maximum(self.igm_state.thk + self.dt * -divflux, 0.0).numpy()
+        new_thickness = tf.maximum(self.igm_state.thk + dt_seconds * -divflux, 0.0).numpy()
         new_thickness[new_thickness == 0.0] = np.nan
 
-        thickness_change = (self.dt * -divflux).numpy()
+        thickness_change = (dt_seconds * -divflux).numpy()
 
         # And apply it to the glacier
-        self.glacier.update(self, "ice_thickness", thickness_change, start_time, start_time + self.dt)
+        self.glacier.update(self, "ice_thickness", thickness_change, start_time, end_time)
 
         # (Not sure why/if the follwing is needed)
         self.igm_state.it = self.igm_state.it + 1

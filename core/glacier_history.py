@@ -3,10 +3,14 @@ import sqlite3
 import numpy as np
 import io
 
+import pandas as pd
+from core.model_component import ModelComponent
+
 
 class GlacierChangeEvent:
-    def __init__(self, component, field, change, start_time, end_time):
+    def __init__(self, component: ModelComponent, field: str, change: np.ndarray, start_time: pd.Timestamp, end_time: pd.Timestamp, subcomponent=""):
         self.component = component
+        self.subcomponent = subcomponent
         self.field = field
         self.change = change
         self.start_time = start_time
@@ -20,6 +24,7 @@ class GlacierHistory:
     def __init__(self):
         self.mem_conn = sqlite3.connect(":memory:")
         self._init_db()
+        self.ref_date = pd.Timestamp("1801-01-01")
 
     # ----------------------------
     # DB setup
@@ -32,6 +37,7 @@ class GlacierHistory:
             CREATE TABLE IF NOT EXISTS glacier_change_events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 component TEXT,
+                subcomponent TEXT,
                 field TEXT,
                 change BLOB,
                 start_time REAL,
@@ -53,6 +59,10 @@ class GlacierHistory:
     # Insert
     # ----------------------------
     def add_event(self, event: GlacierChangeEvent):
+
+        start_time = (event.start_time - self.ref_date).days  # convert to days since ref for sql
+        end_time = (event.end_time - self.ref_date).days  # convert to days since ref for sql
+
         cursor = self.mem_conn.cursor()
 
         blob = self.array_to_blob(event.change)
@@ -60,10 +70,10 @@ class GlacierHistory:
         cursor.execute(
             """
             INSERT INTO glacier_change_events
-            (component, field, change, start_time, end_time)
-            VALUES (?, ?, ?, ?, ?)
+            (component, subcomponent, field, change, start_time, end_time)
+            VALUES (?, ?, ?, ?, ?, ?)
         """,
-            (event.component.__class__.__name__, event.field, blob, event.start_time, event.end_time),
+            (event.component.__class__.__name__, event.subcomponent, event.field, blob, start_time, end_time),
         )
 
         self.mem_conn.commit()
@@ -104,8 +114,11 @@ class GlacierHistory:
 
     # Query functions
 
-    def aggregate_change(self, component: str, field: str, start_time: float, end_time: float):
+    def aggregate_change(self, component: str, field: str, start_time: pd.Timestamp, end_time: pd.Timestamp):
         cursor = self.mem_conn.cursor()
+
+        start_time = (start_time - self.ref_date).days  # convert to days since ref for sql
+        end_time = (end_time - self.ref_date).days  # convert to days since ref for sql
 
         cursor.execute(
             """

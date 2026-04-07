@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from core.model_component import ModelComponent
 from core.constants import *
 
@@ -12,12 +13,20 @@ class ClimaticMassBalance(ModelComponent):
     # We only calculate the CMB on the glacier
     # That means that outline changes can only be caused by ice flow
 
-    def step(self, start_time):
-        if self.dt == ANNUAL_DT_SECONDS:
-            cmb = self.get_annual_cmb()
-        elif self.dt == MONTHLY_DT_SECONDS:
-            cmb = self.get_monthly_cmb()
-        elif self.dt == DAILY_DT_SECONDS:
+    def step(self, start_time, end_time):
+        if self.dt == "yearly":
+            acc, melt, refreeze = self.get_annual_cmb()
+        elif self.dt == "monthly":
+            acc, melt, refreeze = self.get_monthly_cmb(start_time)
+        elif self.dt == "daily":
             cmb = self.get_daily_cmb()
 
-        self.glacier.update(self, "ice_thickness", cmb, start_time, start_time + self.dt)
+        # Only use on glacier
+        acc = np.where(self.glacier.data.ice_thickness.values != 0, acc, np.nan)
+        self.glacier.update(self, "ice_thickness", acc, start_time, end_time, "acc")
+
+        melt = np.where(self.glacier.data.ice_thickness.values != 0, melt, np.nan)
+        self.glacier.update(self, "ice_thickness", -melt, start_time, end_time, "melt")
+
+        refreeze = np.where(self.glacier.data.ice_thickness.values != 0, refreeze, np.nan)
+        self.glacier.update(self, "ice_thickness", refreeze, start_time, end_time, "refreeze")

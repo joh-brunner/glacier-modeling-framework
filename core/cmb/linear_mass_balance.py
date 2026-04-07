@@ -12,7 +12,13 @@ class LinearMassBalance(ClimaticMassBalance):
         surface_elevation = np.where(thk != 0, thk + bed, np.nan)
 
         cmb = self.ela_climatic_mass_balance(surface_elevation=surface_elevation, ela=650.0, grad_acc=0.003, grad_abl=0.015, max_acc=1.0)
-        return cmb
+        
+        # !!! toDo !!!
+        acc = cmb
+        melt = np.zeros_like(cmb)
+        refreeze = np.zeros_like(cmb)
+
+        return (acc, melt, refreeze)
 
     def ela_climatic_mass_balance(self, surface_elevation, ela, grad_acc=0.005, grad_abl=0.01, max_acc=None):
         # mask: valid glacier cells
